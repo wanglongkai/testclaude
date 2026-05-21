@@ -66,8 +66,8 @@ export default function MembersPage() {
     },
   ]
 
-  const fetchData = (params: { page: number; pageSize: number }) => {
-    return getMembers({ ...params, ...searchParams }).then((r) => r.data)
+  const fetchData = (params: { page: number; pageSize: number; [key: string]: unknown }) => {
+    return getMembers(params).then((r) => r.data)
   }
 
   const handleSearch = (values: Record<string, unknown>) => {
@@ -141,7 +141,7 @@ export default function MembersPage() {
         ]}
       />
       <SearchForm fields={searchFields} onSearch={handleSearch} onReset={handleReset} />
-      <DataTable<PartyMember> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} />
+      <DataTable<PartyMember> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} filterParams={searchParams} />
       <Modal
         title={editing ? '编辑成员' : '新增成员'}
         open={modalOpen}

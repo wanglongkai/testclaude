@@ -17,6 +17,7 @@ export default function CategoriesPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<RankingCategory | null>(null)
   const [refresh, setRefresh] = useState(0)
+  const [searchParams, setSearchParams] = useState<Record<string, unknown>>({})
   const [form] = Form.useForm()
 
   const searchFields: SearchField[] = [{ name: 'keyword', label: '名称', type: 'input' }]
@@ -69,7 +70,8 @@ export default function CategoriesPage() {
     },
   ]
 
-  const fetchData = (params: { page: number; pageSize: number }) => getCategories(params).then((r) => r.data)
+  const fetchData = (params: { page: number; pageSize: number; keyword?: string }) =>
+    getCategories(params).then((r) => r.data)
 
   const handleAdd = () => {
     setEditing(null)
@@ -98,10 +100,22 @@ export default function CategoriesPage() {
       />
       <SearchForm
         fields={searchFields}
-        onSearch={() => setRefresh((x) => x + 1)}
-        onReset={() => setRefresh((x) => x + 1)}
+        onSearch={(values) => {
+          setSearchParams(values)
+          setRefresh((x) => x + 1)
+        }}
+        onReset={() => {
+          setSearchParams({})
+          setRefresh((x) => x + 1)
+        }}
       />
-      <DataTable<RankingCategory> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} />
+      <DataTable<RankingCategory>
+        columns={columns}
+        fetchData={fetchData}
+        rowKey="id"
+        refreshFlag={refresh}
+        filterParams={searchParams}
+      />
       <Modal
         title={editing ? '编辑分类' : '新增分类'}
         open={modalOpen}

@@ -34,6 +34,7 @@ export interface StyleContent {
 export function getCategories(params: {
   page: number
   pageSize: number
+  keyword?: string
 }): Promise<ApiResponse<PageResult<RankingCategory>>> {
   return request.get('/ranking/categories', { params })
 }
@@ -70,6 +71,8 @@ export function rejectSubmission(id: string): Promise<ApiResponse<Submission>> {
 export function getStyleContents(params: {
   page: number
   pageSize: number
+  keyword?: string
+  status?: string
 }): Promise<ApiResponse<PageResult<StyleContent>>> {
   return request.get('/ranking/style', { params })
 }

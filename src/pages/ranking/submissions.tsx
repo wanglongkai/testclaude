@@ -7,6 +7,7 @@ import { getSubmissions, approveSubmission, rejectSubmission, type Submission } 
 import type { ColumnsType } from 'antd/es/table'
 
 export default function SubmissionsPage() {
+  const [searchParams, setSearchParams] = useState<Record<string, unknown>>({})
   const [refresh, setRefresh] = useState(0)
 
   const searchFields: SearchField[] = [
@@ -84,17 +85,24 @@ export default function SubmissionsPage() {
     },
   ]
 
-  const fetchData = (params: { page: number; pageSize: number }) => getSubmissions(params).then((r) => r.data)
+  const fetchData = (params: { page: number; pageSize: number; [key: string]: unknown }) =>
+    getSubmissions(params).then((r) => r.data)
 
   return (
     <div>
       <PageHeader title="作品投稿管理" />
       <SearchForm
         fields={searchFields}
-        onSearch={() => setRefresh((x) => x + 1)}
-        onReset={() => setRefresh((x) => x + 1)}
+        onSearch={(values) => {
+          setSearchParams(values)
+          setRefresh((x) => x + 1)
+        }}
+        onReset={() => {
+          setSearchParams({})
+          setRefresh((x) => x + 1)
+        }}
       />
-      <DataTable<Submission> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} />
+      <DataTable<Submission> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} filterParams={searchParams} />
     </div>
   )
 }

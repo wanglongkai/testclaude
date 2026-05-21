@@ -26,8 +26,8 @@ export default function TransfersPage() {
     { title: '调动日期', dataIndex: 'transferDate', key: 'transferDate', width: 120 },
   ]
 
-  const fetchData = (params: { page: number; pageSize: number }) => {
-    return getTransfers({ ...params, ...searchParams }).then((r) => r.data)
+  const fetchData = (params: { page: number; pageSize: number; [key: string]: unknown }) => {
+    return getTransfers(params).then((r) => r.data)
   }
 
   const loadOptions = async () => {
@@ -114,7 +114,7 @@ export default function TransfersPage() {
         ]}
       />
       <SearchForm fields={searchFields} onSearch={handleSearch} onReset={handleReset} />
-      <DataTable<TransferRecord> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} />
+      <DataTable<TransferRecord> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} filterParams={searchParams} />
       <Modal
         title="新增调动"
         open={modalOpen}

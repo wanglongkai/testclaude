@@ -54,7 +54,11 @@ export interface SystemParam {
   updatedAt: string
 }
 
-export function getUsers(params: { page: number; pageSize: number }): Promise<ApiResponse<PageResult<SysUser>>> {
+export function getUsers(params: {
+  page: number
+  pageSize: number
+  keyword?: string
+}): Promise<ApiResponse<PageResult<SysUser>>> {
   return request.get('/system/users', { params })
 }
 export function createUser(data: Partial<SysUser>): Promise<ApiResponse<SysUser>> {

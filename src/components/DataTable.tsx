@@ -1,21 +1,30 @@
 import { Table } from 'antd'
 import type { TablePaginationConfig, TableProps } from 'antd'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+
+export interface FetchDataParams {
+  page: number
+  pageSize: number
+  [key: string]: unknown
+}
 
 interface DataTableProps<T> {
   columns: TableProps<T>['columns']
-  fetchData: (params: { page: number; pageSize: number }) => Promise<{ list: T[]; total: number }>
+  fetchData: (params: FetchDataParams) => Promise<{ list: T[]; total: number }>
   rowKey?: string | ((record: T) => string)
   refreshFlag?: number
+  filterParams?: Record<string, unknown>
 }
 
-export default function DataTable<T>({ columns, fetchData, rowKey = 'id', refreshFlag = 0 }: DataTableProps<T>) {
+export default function DataTable<T>({ columns, fetchData, rowKey = 'id', refreshFlag = 0, filterParams = {} }: DataTableProps<T>) {
   const [data, setData] = useState<T[]>([])
   const [loading, setLoading] = useState(true)
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 })
+  const filterRef = useRef(filterParams)
+  filterRef.current = filterParams
 
   const loadData = (page: number, pageSize: number) => {
-    fetchData({ page, pageSize })
+    fetchData({ page, pageSize, ...filterRef.current })
       .then((res) => {
         setData(res.list)
         setPagination((prev) => ({ ...prev, total: res.total }))

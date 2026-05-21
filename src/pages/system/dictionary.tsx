@@ -14,6 +14,7 @@ import {
 import type { ColumnsType } from 'antd/es/table'
 
 export default function DictionaryPage() {
+  const [searchParams, setSearchParams] = useState<Record<string, unknown>>({})
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<DictionaryItem | null>(null)
   const [refresh, setRefresh] = useState(0)
@@ -70,7 +71,8 @@ export default function DictionaryPage() {
     },
   ]
 
-  const fetchData = (params: { page: number; pageSize: number }) => getDictionaryItems(params).then((r) => r.data)
+  const fetchData = (params: { page: number; pageSize: number; [key: string]: unknown }) =>
+    getDictionaryItems(params).then((r) => r.data)
   const handleAdd = () => {
     setEditing(null)
     form.resetFields()
@@ -97,10 +99,16 @@ export default function DictionaryPage() {
       />
       <SearchForm
         fields={searchFields}
-        onSearch={() => setRefresh((x) => x + 1)}
-        onReset={() => setRefresh((x) => x + 1)}
+        onSearch={(values) => {
+          setSearchParams(values)
+          setRefresh((x) => x + 1)
+        }}
+        onReset={() => {
+          setSearchParams({})
+          setRefresh((x) => x + 1)
+        }}
       />
-      <DataTable<DictionaryItem> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} />
+      <DataTable<DictionaryItem> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} filterParams={searchParams} />
       <Modal
         title={editing ? '编辑字典项' : '新增字典项'}
         open={modalOpen}

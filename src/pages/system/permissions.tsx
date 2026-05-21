@@ -14,6 +14,7 @@ const roleOptions = [
 ]
 
 export default function PermissionsPage() {
+  const [searchParams, setSearchParams] = useState<Record<string, unknown>>({})
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<SysUser | null>(null)
   const [refresh, setRefresh] = useState(0)
@@ -81,7 +82,8 @@ export default function PermissionsPage() {
     },
   ]
 
-  const fetchData = (params: { page: number; pageSize: number }) => getUsers(params).then((r) => r.data)
+  const fetchData = (params: { page: number; pageSize: number; [key: string]: unknown }) =>
+    getUsers(params).then((r) => r.data)
 
   const handleAdd = () => {
     setEditing(null)
@@ -110,10 +112,16 @@ export default function PermissionsPage() {
       />
       <SearchForm
         fields={searchFields}
-        onSearch={() => setRefresh((x) => x + 1)}
-        onReset={() => setRefresh((x) => x + 1)}
+        onSearch={(values) => {
+          setSearchParams(values)
+          setRefresh((x) => x + 1)
+        }}
+        onReset={() => {
+          setSearchParams({})
+          setRefresh((x) => x + 1)
+        }}
       />
-      <DataTable<SysUser> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} />
+      <DataTable<SysUser> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} filterParams={searchParams} />
       <Modal
         title={editing ? '编辑用户' : '新增用户'}
         open={modalOpen}

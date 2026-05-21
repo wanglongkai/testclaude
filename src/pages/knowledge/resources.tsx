@@ -89,8 +89,8 @@ export default function ResourcesPage() {
     },
   ]
 
-  const fetchData = (params: { page: number; pageSize: number }) => {
-    return getResources({ ...params, ...searchParams } as KnowledgeSearchParams).then((res) => res.data)
+  const fetchData = (params: { page: number; pageSize: number; [key: string]: unknown }) => {
+    return getResources(params as KnowledgeSearchParams).then((res) => res.data)
   }
 
   const handleSearch = (values: Record<string, unknown>) => {
@@ -147,7 +147,7 @@ export default function ResourcesPage() {
         actions={[{ label: '新增资源', type: 'primary', icon: <PlusOutlined />, onClick: handleAdd }]}
       />
       <SearchForm fields={searchFields} onSearch={handleSearch} onReset={handleReset} />
-      <DataTable<KnowledgeResource> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} />
+      <DataTable<KnowledgeResource> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} filterParams={searchParams} />
       <Modal
         title={editing ? '编辑资源' : '新增资源'}
         open={modalOpen}

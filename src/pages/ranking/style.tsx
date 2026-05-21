@@ -7,6 +7,7 @@ import { getStyleContents, updateStyleContent, type StyleContent } from '@/api/s
 import type { ColumnsType } from 'antd/es/table'
 
 export default function StylePage() {
+  const [searchParams, setSearchParams] = useState<Record<string, unknown>>({})
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<StyleContent | null>(null)
   const [refresh, setRefresh] = useState(0)
@@ -56,7 +57,8 @@ export default function StylePage() {
     },
   ]
 
-  const fetchData = (params: { page: number; pageSize: number }) => getStyleContents(params).then((r) => r.data)
+  const fetchData = (params: { page: number; pageSize: number; [key: string]: unknown }) =>
+    getStyleContents(params).then((r) => r.data)
 
   const handleModalOk = async () => {
     const values = await form.validateFields()
@@ -73,10 +75,16 @@ export default function StylePage() {
       <PageHeader title="配置个人风采内容" />
       <SearchForm
         fields={searchFields}
-        onSearch={() => setRefresh((x) => x + 1)}
-        onReset={() => setRefresh((x) => x + 1)}
+        onSearch={(values) => {
+          setSearchParams(values)
+          setRefresh((x) => x + 1)
+        }}
+        onReset={() => {
+          setSearchParams({})
+          setRefresh((x) => x + 1)
+        }}
       />
-      <DataTable<StyleContent> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} />
+      <DataTable<StyleContent> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} filterParams={searchParams} />
       <Modal
         title="编辑风采内容"
         open={modalOpen}

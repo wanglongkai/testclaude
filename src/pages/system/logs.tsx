@@ -34,8 +34,8 @@ export default function LogsPage() {
     { title: '时间', dataIndex: 'createdAt', key: 'createdAt', width: 180 },
   ]
 
-  const fetchData = (params: { page: number; pageSize: number }) =>
-    getLogs({ ...params, ...searchParams }).then((r) => r.data)
+  const fetchData = (params: { page: number; pageSize: number; [key: string]: unknown }) =>
+    getLogs(params).then((r) => r.data)
 
   return (
     <div>
@@ -51,7 +51,7 @@ export default function LogsPage() {
           setRefresh((x) => x + 1)
         }}
       />
-      <DataTable<SysLog> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} />
+      <DataTable<SysLog> columns={columns} fetchData={fetchData} rowKey="id" refreshFlag={refresh} filterParams={searchParams} />
     </div>
   )
 }
