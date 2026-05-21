@@ -31,6 +31,7 @@ const MonitorPage = lazy(() => import('@/pages/system/monitor'))
 const LogsPage = lazy(() => import('@/pages/system/logs'))
 const DictionaryPage = lazy(() => import('@/pages/system/dictionary'))
 const ParamsPage = lazy(() => import('@/pages/system/params'))
+const ThreeJsPage = lazy(() => import('@/pages/playground/threejs'))
 
 export const router = createBrowserRouter([
   {
@@ -61,6 +62,7 @@ export const router = createBrowserRouter([
       { path: 'system/logs', element: <LazyPage Page={LogsPage} /> },
       { path: 'system/dictionary', element: <LazyPage Page={DictionaryPage} /> },
       { path: 'system/params', element: <LazyPage Page={ParamsPage} /> },
+      { path: 'playground/threejs', element: <LazyPage Page={ThreeJsPage} /> },
     ],
   },
 ])

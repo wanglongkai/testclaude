@@ -1,6 +1,13 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Menu } from 'antd'
-import { DashboardOutlined, BookOutlined, TrophyOutlined, TeamOutlined, SettingOutlined } from '@ant-design/icons'
+import {
+  DashboardOutlined,
+  BookOutlined,
+  TrophyOutlined,
+  TeamOutlined,
+  SettingOutlined,
+  ExperimentOutlined,
+} from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 
 const menuItems: MenuProps['items'] = [
@@ -51,6 +58,12 @@ const menuItems: MenuProps['items'] = [
       { key: '/system/dictionary', label: '数据字典管理' },
       { key: '/system/params', label: '系统参数配置' },
     ],
+  },
+  {
+    key: 'playground',
+    icon: <ExperimentOutlined />,
+    label: '练习场',
+    children: [{ key: '/playground/threejs', label: 'Three.js 示例' }],
   },
 ]
 
